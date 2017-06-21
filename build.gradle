@@ -23,7 +23,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'jacoco'
-apply plugin: 'findbugs'
+//apply plugin: 'findbugs'
 apply plugin: 'com.moowork.node'
 apply plugin: 'com.moowork.gulp'
 
@@ -31,6 +31,7 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 dependencies {
+	compile 'com.ibm.watson.developer_cloud:java-sdk:3.8.0'
     compile 'javax.ws.rs:jsr311-api:1.1.1'
     compile 'com.google.code.gson:gson:2.6.2'
     compile group: 'org.apache.solr', name: 'solr-solrj', version: '5.4.1'
@@ -51,8 +52,10 @@ dependencies {
     compile group: 'org.jsoup', name: 'jsoup', version: '1.9.2'
     compile group: 'com.ibm.watson.developer_cloud', name: 'conversation', version:'3.5.3'
     compile group: 'com.ibm.watson.developer_cloud', name: 'discovery', version:'3.5.3'
+    compile group: 'com.cloudant', name: 'cloudant-client', version: '2.5.0' //RnR logging
+    
     testCompile 'com.sun.jersey:jersey-client:1.19.1'
-    testCompile 'org.mockito:mockito-core:1.+'
+    testCompile 'org.mockito:mockito-core:1.10.19'
     testCompile 'org.powermock:powermock-module-junit4:1.6.5'
     testCompile group: 'com.squareup.okhttp3', name: 'mockwebserver', version:'3.3.1'
     testCompile group: 'ch.qos.logback', name: 'logback-classic', version:'1.1.7'

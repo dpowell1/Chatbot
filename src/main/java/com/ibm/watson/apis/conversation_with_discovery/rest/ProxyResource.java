@@ -124,7 +124,23 @@ public class ProxyResource {
 
     if (response.getOutput().containsKey("action")
         && (response.getOutput().get("action").toString().indexOf("call_discovery") != -1)) {
-      String query = response.getInputText();
+      callDiscovery(response);
+    }
+
+    return response;
+  }
+  
+  private void callRetrieveAndRank(MessageResponse response) throws Exception {
+	  
+  }
+  
+  /**
+   * This method calls the Discovery service if the Conversation alone was unable to adequately answer the user. 
+   *
+   * @param request The full query the user asked of Watson
+   */
+  private void callDiscovery(MessageResponse response) throws Exception {
+	  String query = response.getInputText();
 
       // Extract the user's original query from the conversational
       // response
@@ -147,14 +163,14 @@ public class ProxyResource {
 
         // Send the user's question to the discovery service
         List<DocumentPayload> docs = discoveryClient.getDocuments(query);
+        if (docs.size() == 1 && docs.get(0).getTitle() == "No results found") {
+        	logger.info(Messages.getString(docs.toString()));
+        }
 
         // Append the discovery answers to the output object that will
         // be sent to the UI
         output.put("CEPayload", docs);
       }
-    }
-
-    return response;
   }
 
   /**
