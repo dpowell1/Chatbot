@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.ibm.watson.apis.conversation_with_discovery.retrieve_and_rank.requests;
+package com.ibm.watson.apis.retrieve_and_rank.requests;
 
 import java.io.IOException;
 
@@ -23,9 +23,9 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 
-import com.ibm.watson.apis.conversation_with_discovery.retrieve_and_rank.utils.Constants;
-import com.ibm.watson.apis.conversation_with_discovery.retrieve_and_rank.utils.HttpSolrClientUtils;
-import com.ibm.watson.apis.conversation_with_discovery.retrieve_and_rank.utils.Messages;
+import com.ibm.watson.apis.retrieve_and_rank.utils.Constants;
+import com.ibm.watson.apis.retrieve_and_rank.utils.HttpSolrClientUtils;
+import com.ibm.watson.apis.retrieve_and_rank.utils.Messages;
 import com.ibm.watson.developer_cloud.retrieve_and_rank.v1.RetrieveAndRank;
 import com.ibm.watson.developer_cloud.util.CredentialUtils;
 import com.ibm.watson.developer_cloud.util.CredentialUtils.ServiceCredentials;

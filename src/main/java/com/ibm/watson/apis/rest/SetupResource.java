@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package com.ibm.watson.apis.conversation_with_discovery.rest;
+package com.ibm.watson.apis.rest;
 
 import java.text.MessageFormat;
 
@@ -25,9 +25,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.gson.JsonObject;
-import com.ibm.watson.apis.conversation_with_discovery.listener.AppServletContextListener;
-import com.ibm.watson.apis.conversation_with_discovery.utils.Constants;
-import com.ibm.watson.apis.conversation_with_discovery.utils.Messages;
+import com.ibm.watson.apis.listener.AppServletContextListener;
+import com.ibm.watson.apis.utils.Constants;
+import com.ibm.watson.apis.utils.Messages;
 
 /**
  * The SetupResource is used to fetch the configuration file with the WorkspaceId from the env file and the setup

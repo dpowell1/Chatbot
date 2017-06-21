@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package com.ibm.watson.apis.conversation_with_discovery.payload;
+package com.ibm.watson.apis.payload;
 
 /**
  * A Payload object which describes a single result returned by the Discovery Service. The service is provided

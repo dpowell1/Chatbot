@@ -10,11 +10,11 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package com.ibm.watson.apis.conversation_with_discovery.discovery;
+package com.ibm.watson.apis.discovery;
 
 import java.util.StringTokenizer;
 
-import com.ibm.watson.apis.conversation_with_discovery.utils.Constants;
+import com.ibm.watson.apis.utils.Constants;
 import com.ibm.watson.developer_cloud.discovery.v1.Discovery;
 import com.ibm.watson.developer_cloud.discovery.v1.model.query.QueryRequest;
 import com.ibm.watson.developer_cloud.discovery.v1.model.query.QueryResponse;

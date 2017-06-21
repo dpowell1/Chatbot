@@ -11,7 +11,7 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.ibm.watson.apis.conversation_with_discovery.rest;
+package com.ibm.watson.apis.rest;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,10 +34,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
-import com.ibm.watson.apis.conversation_with_discovery.discovery.DiscoveryClient;
-import com.ibm.watson.apis.conversation_with_discovery.payload.DocumentPayload;
-import com.ibm.watson.apis.conversation_with_discovery.utils.Constants;
-import com.ibm.watson.apis.conversation_with_discovery.utils.Messages;
+import com.ibm.watson.apis.discovery.DiscoveryClient;
+import com.ibm.watson.apis.payload.DocumentPayload;
+import com.ibm.watson.apis.utils.Constants;
+import com.ibm.watson.apis.utils.Messages;
 import com.ibm.watson.developer_cloud.conversation.v1.ConversationService;
 import com.ibm.watson.developer_cloud.conversation.v1.model.MessageRequest;
 import com.ibm.watson.developer_cloud.conversation.v1.model.MessageResponse;

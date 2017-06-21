@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.ibm.watson.apis.conversation_with_discovery.retrieve_and_rank.utils;
+package com.ibm.watson.apis.retrieve_and_rank.utils;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;

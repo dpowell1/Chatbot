@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.ibm.watson.apis.conversation_with_discovery.retrieve_and_rank.payload;
+package com.ibm.watson.apis.retrieve_and_rank.payload;
 
 /**
  * A Payload object which describes a single result returned by the Retrieve and Rank Service. The

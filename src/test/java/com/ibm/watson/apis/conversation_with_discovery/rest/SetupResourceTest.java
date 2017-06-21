@@ -26,7 +26,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.gson.JsonObject;
-import com.ibm.watson.apis.conversation_with_discovery.listener.AppServletContextListener;
+import com.ibm.watson.apis.listener.AppServletContextListener;
+import com.ibm.watson.apis.rest.SetupResource;
 
 /**
  * Unit tests for the {@link SetupResource}.
