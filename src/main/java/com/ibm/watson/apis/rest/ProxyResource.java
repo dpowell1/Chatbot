@@ -34,6 +34,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
+import com.ibm.watson.apis.retrieve_and_rank.requests.RetrieveAndRankClient;
 import com.ibm.watson.apis.discovery.DiscoveryClient;
 import com.ibm.watson.apis.payload.DocumentPayload;
 import com.ibm.watson.apis.utils.Constants;
@@ -45,7 +46,8 @@ import com.ibm.watson.developer_cloud.service.exception.UnauthorizedException;
 import com.ibm.watson.developer_cloud.util.GsonSingleton;
 
 /**
- * The Class ProxyResource.
+ * Manages input from the user and calls to Watson Retrieve
+ * and Rank/Discovery.
  */
 @Path("conversation/api/v1/workspaces")
 public class ProxyResource {
@@ -105,7 +107,6 @@ public class ProxyResource {
 
     // Configure the Watson Developer Cloud SDK to make a call to the
     // appropriate conversation service.
-
     ConversationService service =
         new ConversationService(API_VERSION != null ? API_VERSION : ConversationService.VERSION_DATE_2016_09_20);
     if ((username != null) || (password != null)) {
@@ -121,18 +122,49 @@ public class ProxyResource {
     // Determine if conversation's response is sufficient to answer the
     // user's question or if we
     // should call the discovery service to obtain better answers
-
-    if (response.getOutput().containsKey("action")
-        && (response.getOutput().get("action").toString().indexOf("call_discovery") != -1)) {
-      callDiscovery(response);
+    if (response.getOutput().containsKey("action") 
+    		&& (response.getOutput().get("action").toString().indexOf("lookup_information") != -1)) {
+    	callRetrieveAndRank(response);
+    	boolean noResults = response.getOutput().get("CEPayload").toString() == "[]";
+    	if (noResults) {
+    		callDiscovery(response);
+    	}
     }
 
     return response;
   }
   
-  private void callRetrieveAndRank(MessageResponse response) throws Exception {
-	  
-  }
+	private void callRetrieveAndRank(MessageResponse response) throws Exception {
+		String query = response.getInputText();
+
+		// Extract the user's original query from the conversational response
+		if (query != null && !query.isEmpty()) {
+			RetrieveAndRankClient retrieveAndRankClient = new RetrieveAndRankClient();
+
+			// For this app, both the original conversation response and the
+			// retrieve and rank response
+			// are sent to the UI. Extract and add the conversational response
+			// to the ultimate response
+			// we will send to the user. The UI will process this response and
+			// show the top 5 retrieve
+			// and rank answers to the user in the main UI. The JSON response
+			// section of the UI will
+			// show information from the calls to both services.
+			Map<String, Object> output = response.getOutput();
+			if (output == null) {
+				output = new HashMap<String, Object>();
+				response.setOutput(output);
+			}
+
+			// Send the user's question to the retrieve and rank service
+			List<com.ibm.watson.apis.retrieve_and_rank.payload.DocumentPayload> docs;
+			docs = retrieveAndRankClient.getDocuments(query);
+
+			// Append the retrieve and rank answers to the output object that
+			// will be sent to the UI
+			output.put("CEPayload", docs); //$NON-NLS-1$
+		}
+	}
   
   /**
    * This method calls the Discovery service if the Conversation alone was unable to adequately answer the user. 

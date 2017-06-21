@@ -13,8 +13,10 @@
 package com.ibm.watson.apis.discovery;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -75,8 +77,8 @@ public class DiscoveryClient {
 
     if (jarray.size() > 0) {
       for (int i = 0; (i < jarray.size()) && (i < Constants.DISCOVERY_MAX_SEARCH_RESULTS_TO_SHOW); i++) {
-        DocumentPayload documentPayload = new DocumentPayload();
         JsonObject jsonObj = jarray.get(i).getAsJsonObject();
+        DocumentPayload documentPayload = new DocumentPayload();
         String id = jsonObj.get(Constants.DISCOVERY_FIELD_ID).toString().replaceAll("\"", "");
         documentPayload.setId(id);
         
@@ -94,35 +96,31 @@ public class DiscoveryClient {
         String body;
         if (jsonObj.get(Constants.DISCOVERY_FIELD_BODY) != null) {
           body = jsonObj.get(Constants.DISCOVERY_FIELD_BODY).toString();
-        } else if (jsonObj.get("extracted_metadata").getAsJsonObject().get(Constants.DISCOVERY_FIELD_BODY) != null){
-          body = jsonObj.get("extracted_metadata").getAsJsonObject()
-        		  .get(Constants.DISCOVERY_FIELD_BODY).toString();
+        } else if (jsonObj.get("enriched_text") != null){
+          body = getEnrichedData(jsonObj.get("enriched_text").getAsJsonObject());
         } else {
         	body = "empty";
         	documentPayload.setBody(body);
         }
         if (body != "empty") {
         	body = body.replaceAll("\"", "");
-            // This method limits the response text in this sample
-            // app to two paragraphs.
-            String bodyTwoPara = limitParagraph(body);
-            documentPayload.setBody(bodyTwoPara);
+        	documentPayload.setBody(body);
             documentPayload.setBodySnippet(getSniplet(body));
         }
         
-        //Source URL
+        //Source URL of document
         String url;
         if (jsonObj.get(Constants.DISCOVERY_FIELD_SOURCE_URL) != null) {
         	documentPayload.setSourceUrl(jsonObj.get(Constants.DISCOVERY_FIELD_SOURCE_URL)
                     .toString().replaceAll("\"", ""));
-        } else if (jsonObj.get("extracted_metadata").getAsJsonObject().get(Constants.DISCOVERY_FIELD_SOURCE_URL) != null) {
-        	documentPayload.setSourceUrl(jsonObj.get("extracted_metadata").getAsJsonObject()
+        } else if (jsonObj.get("enriched_text").getAsJsonObject().get(Constants.DISCOVERY_FIELD_SOURCE_URL) != null) {
+        	documentPayload.setSourceUrl(jsonObj.get("enriched_text").getAsJsonObject()
         			.get(Constants.DISCOVERY_FIELD_SOURCE_URL).toString().replaceAll("\"", ""));
         } else {
         	documentPayload.setSourceUrl("empty");
         }
         
-        //Confidence
+        //Confidence of document
         if (jsonObj.get(Constants.DISCOVERY_FIELD_CONFIDENCE) != null) {
         	documentPayload.setConfidence(jsonObj.get(Constants.DISCOVERY_FIELD_CONFIDENCE)
         			.toString().replaceAll("\"", ""));
@@ -147,6 +145,48 @@ public class DiscoveryClient {
 
     return payload;
   }
+  
+	/**
+	 * Extracts desired information from Discovery's "enriched_text" tag.
+	 * 
+	 * @param data
+	 *            JsonObject containing the enriched_text JsonObject
+	 * @return String containing the information to be displayed
+	 */
+	private String getEnrichedData(JsonObject data) {
+		return getEnrichedEntities(data);
+	}
+	
+	/**
+	 * Extracts desired information from the enriched entities that
+	 * have a relevance level of >= 0.5.
+	 * 
+	 * @param data
+	 * 			JsonObject containing the entriched_text JsonObject
+	 * @return String containing the information to be displayed
+	 */
+	private String getEnrichedEntities(JsonObject data) {
+		Set<String> choices = new HashSet<>();
+		JsonArray entitiesArray = data.get("entities").getAsJsonArray();
+		// entities are already sorted in order of decreasing relevance
+		for (int i = 0; i < entitiesArray.size(); i++) {
+			JsonObject entity = entitiesArray.get(i).getAsJsonObject();
+			double relevance = entity.get("relevance").getAsDouble();
+			// only include relevant results
+			if (relevance >= 0.5) {
+				choices.add(entity.get("text").toString().replaceAll("\"", ""));
+			} else {
+				break;
+			}
+		}
+		if (choices.size() == 1) {
+			return "Did you mean " + choices.toArray()[0] + "?";
+		} else if (choices.size() > 1) {
+			return "Did you mean:<br/>" + String.join("<br/>", choices);
+		} else {
+			return "I'm not sure what you meant";
+		}
+	}
 
   /**
    * get first <code>SNIPPET_LENGTH</code> characters of body response.

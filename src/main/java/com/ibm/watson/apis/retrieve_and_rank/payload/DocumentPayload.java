@@ -26,6 +26,7 @@ public class DocumentPayload {
   private String sourceUrl;
   private String highlight;
   private String id;
+  private String bodySnippet;
 
   private String confidence;
 
@@ -85,6 +86,24 @@ public class DocumentPayload {
    */
   public void setBody(String body) {
     this.body = body;
+  }
+  
+  /**
+   * Gets the body snippet.
+   *
+   * @return the body snippet
+   */
+  public String getBodySnippet() {
+    return bodySnippet;
+  }
+  
+  /**
+   * Sets the body snippet.
+   *
+   * @param bodySnippet the new body snippet
+   */
+  public void setBodySnippet(String bodySnippet) {
+    this.bodySnippet = bodySnippet;
   }
 
   /**
