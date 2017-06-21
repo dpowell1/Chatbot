@@ -1,14 +1,14 @@
 {
-  "name": "conversation-with-discovery",
+  "name": "chatbot",
   "description": "A simple java based web app which shows how to use the Conversation proxy component to make calls to the Conversation service API.",
   "version": "0.5.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/watson-developer-cloud/conversation-with-discovery.git"
+    "url": "https://github.com/dpowell/Chatbot.git"
   },
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/watson-developer-cloud/conversation-with-discovery/issues"
+    "url": "https://github.com/dpowell/Chatbot/issues"
   },
   "scripts": {
     "build": "gulp build"

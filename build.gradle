@@ -79,7 +79,7 @@ artifacts {
 }
 
 war {
-    archiveName = 'conversation-with-discovery-0.1-SNAPSHOT.war'
+    archiveName = 'chatbot.war'
 }
 
 gulp_build.dependsOn 'installGulp'

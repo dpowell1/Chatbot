@@ -12,7 +12,7 @@ before_cache:
 
 env:
   global:
-  - CF_APP=conversation-with-discovery
+  - CF_APP=chatbot
   - CF_API=https://api.ng.bluemix.net
   - CF_ORGANIZATION=WatsonPlatformServices
   - CF_SPACE=demos
