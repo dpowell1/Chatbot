@@ -158,7 +158,16 @@ public class DiscoveryClient {
 	 */
 	private String getEnrichedData(JsonObject enriched_text) {
 		EnrichedTextObject enrichedText = EnrichedTextObject.getEnrichedTextObject(enriched_text);
-		return formatRelevantEnrichedObjects(enrichedText, Constants.EnrichedText.CONCEPTS);
+		String entities = formatRelevantEnrichedObjects(enrichedText, Constants.EnrichedText.ENTITIES);
+		String concepts = formatRelevantEnrichedObjects(enrichedText, Constants.EnrichedText.CONCEPTS);
+		StringBuilder output = new StringBuilder();
+		if (entities != null) {
+			output.append("<br/>Did you mean to search for:<br/><br/>" + entities);
+		}
+		if (concepts != null) {
+			output.append("<br/>Also consider these ideas:<br/>" + concepts);
+		}
+		return output.toString();
 	}
 	
 	/**
@@ -207,7 +216,7 @@ public class DiscoveryClient {
 		} else if (choices.size() > 1) {
 			return String.join("<br/>", choices);
 		} else {
-			return "I'm not sure what you meant";
+			return null;
 		}
 	}
 

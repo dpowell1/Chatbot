@@ -124,9 +124,8 @@ public class ProxyResource {
     // should call the discovery service to obtain better answers
     if (response.getOutput().containsKey("action") 
     		&& (response.getOutput().get("action").toString().indexOf("lookup_information") != -1)) {
-//    	callRetrieveAndRank(response);
-//    	boolean noResults = response.getOutput().get("CEPayload").toString() == "[]";
-    	boolean noResults = true;
+    	callRetrieveAndRank(response);
+    	boolean noResults = response.getOutput().get("CEPayload").toString() == "[]";
     	if (noResults) {
     		callDiscovery(response);
     	}

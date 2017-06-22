@@ -26,9 +26,8 @@ public class EnrichedTextObject {
 	 */
 	public static EnrichedTextObject getEnrichedTextObject(JsonObject enriched_text) {
 		// Declare array type
-		Type listType = new TypeToken<EnrichedTextObject>() {
-		}.getType();
 		Gson gson = new Gson();
+		Type listType = new TypeToken<EnrichedTextObject>() {}.getType();
 		EnrichedTextObject enrichedText = gson.fromJson(enriched_text, listType);
 		return enrichedText;
 	}
