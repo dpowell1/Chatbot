@@ -124,8 +124,9 @@ public class ProxyResource {
     // should call the discovery service to obtain better answers
     if (response.getOutput().containsKey("action") 
     		&& (response.getOutput().get("action").toString().indexOf("lookup_information") != -1)) {
-    	callRetrieveAndRank(response);
-    	boolean noResults = response.getOutput().get("CEPayload").toString() == "[]";
+//    	callRetrieveAndRank(response);
+//    	boolean noResults = response.getOutput().get("CEPayload").toString() == "[]";
+    	boolean noResults = true;
     	if (noResults) {
     		callDiscovery(response);
     	}
@@ -140,16 +141,6 @@ public class ProxyResource {
 		// Extract the user's original query from the conversational response
 		if (query != null && !query.isEmpty()) {
 			RetrieveAndRankClient retrieveAndRankClient = new RetrieveAndRankClient();
-
-			// For this app, both the original conversation response and the
-			// retrieve and rank response
-			// are sent to the UI. Extract and add the conversational response
-			// to the ultimate response
-			// we will send to the user. The UI will process this response and
-			// show the top 5 retrieve
-			// and rank answers to the user in the main UI. The JSON response
-			// section of the UI will
-			// show information from the calls to both services.
 			Map<String, Object> output = response.getOutput();
 			if (output == null) {
 				output = new HashMap<String, Object>();
@@ -177,16 +168,8 @@ public class ProxyResource {
       // Extract the user's original query from the conversational
       // response
       if ((query != null) && !query.isEmpty()) {
-
-        // For this app, both the original conversation response and the
-        // discovery response
-        // are sent to the UI. Extract and add the conversational
-        // response to the ultimate response
-        // we will send to the user. The UI will process this response
-        // and show the top 3 retrieve
-        // and rank answers to the user in the main UI. The JSON
-        // response section of the UI will
-        // show information from the calls to both services.
+    	// JSON response shows both Conversation and Discovery responses
+    	// Output limited to three documents
         Map<String, Object> output = response.getOutput();
         if (output == null) {
           output = new HashMap<String, Object>();
@@ -195,9 +178,6 @@ public class ProxyResource {
 
         // Send the user's question to the discovery service
         List<DocumentPayload> docs = discoveryClient.getDocuments(query);
-        if (docs.size() == 1 && docs.get(0).getTitle() == "No results found") {
-        	logger.info(Messages.getString(docs.toString()));
-        }
 
         // Append the discovery answers to the output object that will
         // be sent to the UI

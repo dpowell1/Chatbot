@@ -30,6 +30,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.ibm.watson.apis.payload.DocumentPayload;
 import com.ibm.watson.apis.utils.Constants;
+import com.ibm.watson.apis.utils.EnrichedObject;
+import com.ibm.watson.apis.utils.EnrichedTextObject;
 import com.ibm.watson.apis.utils.Messages;
 import com.ibm.watson.developer_cloud.discovery.v1.model.query.QueryResponse;
 
@@ -82,30 +84,31 @@ public class DiscoveryClient {
         String id = jsonObj.get(Constants.DISCOVERY_FIELD_ID).toString().replaceAll("\"", "");
         documentPayload.setId(id);
         
-        //Get title either through "title" or "extracted_metadata->title
-        String title;
-        if (jsonObj.get(Constants.DISCOVERY_FIELD_TITLE) == null) {
-        	JsonElement metadata = jsonObj.get("extracted_metadata");
-        	title = metadata.getAsJsonObject().get(Constants.DISCOVERY_FIELD_TITLE).toString();
-        } else {
-        	title = jsonObj.get(Constants.DISCOVERY_FIELD_TITLE).toString();
-        }
-        documentPayload.setTitle(title.replaceAll("\"", ""));
-        
         //body
         String body;
         if (jsonObj.get(Constants.DISCOVERY_FIELD_BODY) != null) {
           body = jsonObj.get(Constants.DISCOVERY_FIELD_BODY).toString();
-        } else if (jsonObj.get("enriched_text") != null){
-          body = getEnrichedData(jsonObj.get("enriched_text").getAsJsonObject());
+        } else if (jsonObj.get(Constants.SCHEMA_FIELD_ENRICHED_TEXT) != null){
+          body = getEnrichedData(jsonObj.get(Constants.SCHEMA_FIELD_ENRICHED_TEXT).getAsJsonObject());
         } else {
         	body = "empty";
         	documentPayload.setBody(body);
+        	documentPayload.setTitle("No results found");
         }
         if (body != "empty") {
         	body = body.replaceAll("\"", "");
         	documentPayload.setBody(body);
             documentPayload.setBodySnippet(getSniplet(body));
+            
+            //Get title either through "title" or extracted_metadata->title
+            String title;
+            if (jsonObj.get(Constants.DISCOVERY_FIELD_TITLE) == null) {
+            	JsonElement metadata = jsonObj.get(Constants.SCHEMA_FIELD_EXTRACTED_METADATA);
+            	title = metadata.getAsJsonObject().get(Constants.DISCOVERY_FIELD_TITLE).toString();
+            } else {
+            	title = jsonObj.get(Constants.DISCOVERY_FIELD_TITLE).toString();
+            }
+            documentPayload.setTitle(title.replaceAll("\"", ""));
         }
         
         //Source URL of document
@@ -113,8 +116,8 @@ public class DiscoveryClient {
         if (jsonObj.get(Constants.DISCOVERY_FIELD_SOURCE_URL) != null) {
         	documentPayload.setSourceUrl(jsonObj.get(Constants.DISCOVERY_FIELD_SOURCE_URL)
                     .toString().replaceAll("\"", ""));
-        } else if (jsonObj.get("enriched_text").getAsJsonObject().get(Constants.DISCOVERY_FIELD_SOURCE_URL) != null) {
-        	documentPayload.setSourceUrl(jsonObj.get("enriched_text").getAsJsonObject()
+        } else if (jsonObj.get(Constants.SCHEMA_FIELD_ENRICHED_TEXT).getAsJsonObject().get(Constants.DISCOVERY_FIELD_SOURCE_URL) != null) {
+        	documentPayload.setSourceUrl(jsonObj.get(Constants.SCHEMA_FIELD_ENRICHED_TEXT).getAsJsonObject()
         			.get(Constants.DISCOVERY_FIELD_SOURCE_URL).toString().replaceAll("\"", ""));
         } else {
         	documentPayload.setSourceUrl("empty");
@@ -124,8 +127,8 @@ public class DiscoveryClient {
         if (jsonObj.get(Constants.DISCOVERY_FIELD_CONFIDENCE) != null) {
         	documentPayload.setConfidence(jsonObj.get(Constants.DISCOVERY_FIELD_CONFIDENCE)
         			.toString().replaceAll("\"", ""));
-        } else if (jsonObj.get("extracted_metadata").getAsJsonObject().get(Constants.DISCOVERY_FIELD_CONFIDENCE) != null) {
-        	documentPayload.setConfidence(jsonObj.get("extracted_metadata").getAsJsonObject()
+        } else if (jsonObj.get(Constants.SCHEMA_FIELD_EXTRACTED_METADATA).getAsJsonObject().get(Constants.DISCOVERY_FIELD_CONFIDENCE) != null) {
+        	documentPayload.setConfidence(jsonObj.get(Constants.SCHEMA_FIELD_EXTRACTED_METADATA).getAsJsonObject()
         			.get(Constants.DISCOVERY_FIELD_CONFIDENCE).toString().replaceAll("\"", ""));
         } else {
           documentPayload.setConfidence("0.0");
@@ -153,36 +156,56 @@ public class DiscoveryClient {
 	 *            JsonObject containing the enriched_text JsonObject
 	 * @return String containing the information to be displayed
 	 */
-	private String getEnrichedData(JsonObject data) {
-		return getEnrichedEntities(data);
+	private String getEnrichedData(JsonObject enriched_text) {
+		EnrichedTextObject enrichedText = EnrichedTextObject.getEnrichedTextObject(enriched_text);
+		return formatRelevantEnrichedObjects(enrichedText, Constants.EnrichedText.CONCEPTS);
 	}
 	
 	/**
-	 * Extracts desired information from the enriched entities that
-	 * have a relevance level of >= 0.5.
+	 * Formats EnrichedObject entries to be displayed in a web app.
+	 * Objects must have a relevance level of >= 0.5.
+	 * Information includes entity title and a link, if available.
 	 * 
-	 * @param data
-	 * 			JsonObject containing the entriched_text JsonObject
-	 * @return String containing the information to be displayed
+	 * @param enrichedText
+	 * 			EnrichedTextObject containing entities and concepts
+	 * @param objectType
+	 * 			Type (entities, concepts) to search enrichedText
+	 * @return
 	 */
-	private String getEnrichedEntities(JsonObject data) {
+	private String formatRelevantEnrichedObjects(EnrichedTextObject enrichedText, Constants.EnrichedText objectType) {
+		List<EnrichedObject> entityList;
+		switch(objectType) {
+			case ENTITIES:
+				entityList = enrichedText.getEntities();
+				break;
+			case CONCEPTS:
+				entityList = enrichedText.getConcepts();
+				break;
+			default:
+				throw new IllegalArgumentException("EnrichedText type not supported");
+		}
 		Set<String> choices = new HashSet<>();
-		JsonArray entitiesArray = data.get("entities").getAsJsonArray();
 		// entities are already sorted in order of decreasing relevance
-		for (int i = 0; i < entitiesArray.size(); i++) {
-			JsonObject entity = entitiesArray.get(i).getAsJsonObject();
-			double relevance = entity.get("relevance").getAsDouble();
+		for (EnrichedObject obj : entityList) {
 			// only include relevant results
-			if (relevance >= 0.5) {
-				choices.add(entity.get("text").toString().replaceAll("\"", ""));
+			if (obj.getRelevance() >= 0.5) {
+				String entry;
+				String title = obj.getText();
+				String link = obj.getLink();
+				if (link != null) {
+					entry = "<a href='" + link + "'>" + title + "</a>";
+				} else {
+					entry = title;
+				}
+				choices.add(entry.replaceAll("\"", ""));
 			} else {
 				break;
 			}
 		}
 		if (choices.size() == 1) {
-			return "Did you mean " + choices.toArray()[0] + "?";
+			return (String) choices.toArray()[0];
 		} else if (choices.size() > 1) {
-			return "Did you mean:<br/>" + String.join("<br/>", choices);
+			return String.join("<br/>", choices);
 		} else {
 			return "I'm not sure what you meant";
 		}

@@ -20,63 +20,45 @@ public class Constants {
   private Constants() {
 
   }
-  /** The Constant CONVERSATION_URL. */
+  // Conversation URL
   public static final String CONVERSATION_URL = "https://gateway.watsonplatform.net/conversation/api";
 
-  /** The Constant DISCOVERY_FIELD_BODY. */
+  // Discovery fields
   public static final String DISCOVERY_FIELD_BODY = "contentHtml";
-
-  /** The Constant DISCOVERY_FIELD_CONFIDENCE. */
   public static final String DISCOVERY_FIELD_CONFIDENCE = "score";
-
-  /** The Constant DISCOVERY_FIELD_ID. */
   public static final String DISCOVERY_FIELD_ID = "id";
-
-  /** The Constant DISCOVERY_FIELD_SOURCE_URL. */
   public static final String DISCOVERY_FIELD_SOURCE_URL = "sourceUrl";
-
-  /** The Constant DISCOVERY_FIELD_TITLE. */
   public static final String DISCOVERY_FIELD_TITLE = "title";
-
-  /** The Constant DISCOVERY_MAX_SEARCH_RESULTS_TO_SHOW. */
-  public static final int DISCOVERY_MAX_SEARCH_RESULTS_TO_SHOW = 3;
-
-  /** The Constant DISCOVERY_URL. */
   public static final String DISCOVERY_URL = "https://gateway.watsonplatform.net/discovery/api/";
-
-  /** The Constant DISCOVERY_VERSION. */
   public static final String DISCOVERY_VERSION = "2016-12-01";
+  public static final int DISCOVERY_MAX_SEARCH_RESULTS_TO_SHOW = 3;
+  
+  // Number of results to fetch in Retrieve and Rank Query
+  public static final Integer RESULTS_TO_FETCH = 5;
 
-  /** The Constant NOT_READY. */
+  // Schema fields
+  public static final String SCHEMA_FIELD_BODY = "body";
+  public static final String SCHEMA_FIELD_CONTENT_HTML = "contentHtml";
+  public static final String SCHEMA_FIELD_ID = "id";
+  public static final String SCHEMA_FIELD_SOURCE_URL = "sourceUrl";
+  public static final String SCHEMA_FIELD_TITLE = "title";
+  public static final String SCHEMA_FIELD_CONFIDENCE = "ranker.confidence";
+  public static final String SCHEMA_FIELD_ENRICHED_TEXT = "enriched_text";
+  public static final String SCHEMA_FIELD_EXTRACTED_METADATA = "extracted_metadata";
+
+  //Setup config JSON object Fields
+  public static final String SETUP_STEP = "setup_step";
+  public static final String SETUP_STATE = "setup_state";
+  public static final String SETUP_PHASE = "setup_phase";
+  public static final String SETUP_MESSAGE = "setup_message";
+  public static final String SETUP_STATUS_MESSAGE = "setup_status_message";
+  public static final String READY = "ready";
   public static final String NOT_READY = "not_ready";
 
-  /** The Constant READY. */
-  public static final String READY = "ready";
-
-  // Discovery JSON object fields
-  /** The Constant SCHEMA_FIELD_SOURCE_URL. */
-  public static final String SCHEMA_FIELD_SOURCE_URL = "sourceUrl";
-
-  /** The Constant SCHEMA_FIELD_TITLE. */
-  public static final String SCHEMA_FIELD_TITLE = "title";
-
-  /** The Constant SETUP_MESSAGE. */
-  public static final String SETUP_MESSAGE = "setup_message";
-
-  /** The Constant SETUP_PHASE. */
-  public static final String SETUP_PHASE = "setup_phase";
-
-  /** The Constant SETUP_STATE. */
-  public static final String SETUP_STATE = "setup_state";
-
-  /** The Constant SETUP_STATUS_MESSAGE. */
-  public static final String SETUP_STATUS_MESSAGE = "setup_status_message";
-
-  /** The Constant SETUP_STEP. */
-  // Setup config JSON object Fields
-  public static final String SETUP_STEP = "setup_step";
-
-  /** The Constant WORKSPACE_ID. */
+  // Workspace ID
   public static final String WORKSPACE_ID = "WORKSPACE_ID";
+  
+  // Enriched text fields
+  public enum EnrichedText { ENTITIES, CONCEPTS; }
 
 }

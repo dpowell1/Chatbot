@@ -33,7 +33,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.ibm.watson.apis.retrieve_and_rank.payload.DocumentPayload;
-import com.ibm.watson.apis.retrieve_and_rank.utils.Constants;
+import com.ibm.watson.apis.utils.Constants;
 import com.ibm.watson.apis.retrieve_and_rank.utils.Messages;
 
 public class RetrieveAndRankClient {

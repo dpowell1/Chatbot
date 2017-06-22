@@ -23,7 +23,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 
-import com.ibm.watson.apis.retrieve_and_rank.utils.Constants;
+import com.ibm.watson.apis.utils.Constants;
 import com.ibm.watson.apis.retrieve_and_rank.utils.HttpSolrClientUtils;
 import com.ibm.watson.apis.retrieve_and_rank.utils.Messages;
 import com.ibm.watson.developer_cloud.retrieve_and_rank.v1.RetrieveAndRank;
@@ -78,7 +78,7 @@ public class RetrieveAndRankQuery {
     if(StringUtils.isNotBlank(System.getenv("COLLECTION_NAME"))){ //$NON-NLS-1$
       COLLECTION_NAME = System.getenv("COLLECTION_NAME"); //$NON-NLS-1$
     } else {
-      COLLECTION_NAME = Constants.COLLECTION_NAME;
+      throw new IllegalArgumentException(Messages.getString("Collection name cannot be null"));
     }
   }
 
