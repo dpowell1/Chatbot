@@ -89,7 +89,10 @@ public class DiscoveryClient {
         if (jsonObj.get(Constants.DISCOVERY_FIELD_BODY) != null) {
           body = jsonObj.get(Constants.DISCOVERY_FIELD_BODY).toString();
         } else if (jsonObj.get(Constants.SCHEMA_FIELD_ENRICHED_TEXT) != null){
-          body = getEnrichedData(jsonObj.get(Constants.SCHEMA_FIELD_ENRICHED_TEXT).getAsJsonObject());
+          //body = getEnrichedData(jsonObj.get(Constants.SCHEMA_FIELD_ENRICHED_TEXT).getAsJsonObject());
+          String html = jsonObj.get(Constants.SCHEMA_FIELD_CONTENT_HTML).toString();
+          body = html.replaceAll("\\\\n", "")		//remove '\\n'
+          			 .replaceAll("\\\\", "'");		//replace '\\' with single quote
         } else {
         	body = "empty";
         	documentPayload.setBody(body);
@@ -150,7 +153,7 @@ public class DiscoveryClient {
   }
   
 	/**
-	 * Extracts desired information from Discovery's "enriched_text" tag.
+	 * Extracts entity keywords and keyword suggestions from Discovery's "enriched_text" tag.
 	 * 
 	 * @param data
 	 *            JsonObject containing the enriched_text JsonObject
@@ -162,10 +165,10 @@ public class DiscoveryClient {
 		String concepts = formatRelevantEnrichedObjects(enrichedText, Constants.EnrichedText.CONCEPTS);
 		StringBuilder output = new StringBuilder();
 		if (entities != null) {
-			output.append("<br/>Did you mean to search for:<br/><br/>" + entities);
+			output.append("<br/>Did you mean to search for:<br/>" + entities);
 		}
 		if (concepts != null) {
-			output.append("<br/>Also consider these ideas:<br/>" + concepts);
+			output.append("<br/><br/>Also consider these ideas:<br/>" + concepts);
 		}
 		return output.toString();
 	}
